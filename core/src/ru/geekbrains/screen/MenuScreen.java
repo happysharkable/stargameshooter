@@ -6,18 +6,26 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.base.BaseScreen;
+import ru.geekbrains.exception.GameException;
+import ru.geekbrains.math.Rect;
+import ru.geekbrains.sprites.Background;
 
 public class MenuScreen extends BaseScreen {
 
-    private static final float V_LEN = 0.5f;
-
-    private Texture img;
+    private Texture bg;
+    private Background background;
     private Vector2 pos;
 
     @Override
     public void show() {
         super.show();
-        img = new Texture("badlogic.jpg");
+        bg = new Texture("textures/bg.png");
+        try {
+            background = new Background(bg);
+        } catch (GameException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         pos = new Vector2();
     }
 
@@ -30,8 +38,13 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void dispose() {
         batch.dispose();
-        img.dispose();
+        bg.dispose();
         super.dispose();
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
     }
 
     @Override
@@ -47,7 +60,7 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClearColor(0.5f, 0.7f, 0.8f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
+        background.draw(batch);
         batch.end();
     }
 
