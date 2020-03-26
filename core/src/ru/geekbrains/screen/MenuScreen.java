@@ -12,19 +12,13 @@ public class MenuScreen extends BaseScreen {
     private static final float V_LEN = 0.5f;
 
     private Texture img;
-    private Vector2 touch;
     private Vector2 pos;
-    private Vector2 v;
-    private Vector2 tmp;
 
     @Override
     public void show() {
         super.show();
         img = new Texture("badlogic.jpg");
-        touch = new Vector2();
         pos = new Vector2();
-        v = new Vector2();
-        tmp = new Vector2();
     }
 
     @Override
@@ -41,28 +35,19 @@ public class MenuScreen extends BaseScreen {
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        v.set(touch.cpy().sub(pos)).setLength(V_LEN);
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        pos.set(touch);
         return false;
     }
 
     private void update(float delta) {
-        tmp.set(touch);
-        float remainingDistance = (tmp.sub(pos)).len();
-        if (remainingDistance > V_LEN) {
-            pos.add(v);
-        } else {
-            v.setZero();
-            pos.set(touch);
-        }
     }
 
     private void draw() {
         Gdx.gl.glClearColor(0.5f, 0.7f, 0.8f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(img, pos.x, pos.y);
+        batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
         batch.end();
     }
 
