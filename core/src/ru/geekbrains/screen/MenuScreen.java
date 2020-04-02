@@ -9,6 +9,7 @@ import ru.geekbrains.base.BaseScreen;
 import ru.geekbrains.exception.GameException;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.sprites.Background;
+import ru.geekbrains.sprites.Logo;
 
 public class MenuScreen extends BaseScreen {
 
@@ -16,12 +17,15 @@ public class MenuScreen extends BaseScreen {
     private Background background;
     private Vector2 pos;
 
+    private Logo logo;
+
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/bg.png");
         try {
             background = new Background(bg);
+            logo = new Logo(new Texture("red_bug.png"));
         } catch (GameException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -31,8 +35,9 @@ public class MenuScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
-       update(delta);
-       draw();
+        update(delta);
+        logo.update(delta);
+        draw();
     }
 
     @Override
@@ -45,15 +50,18 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
+        logo.resize(worldBounds);
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         pos.set(touch);
+        logo.touchDown(touch, pointer, button);
         return false;
     }
 
     private void update(float delta) {
+        logo.update(delta);
     }
 
     private void draw() {
@@ -61,6 +69,7 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+        logo.draw(batch);
         batch.end();
     }
 
