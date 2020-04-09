@@ -39,7 +39,7 @@ public class Enemy extends Ship {
             float height
     ) {
         this.regions = regions;
-        this.v0.set(v0);
+        this.v0.set(v0.y < -0.1f ? v0 : new Vector2(0f, -0.2f));
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
         this.bulletV.set(0, bulletVY);

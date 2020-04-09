@@ -19,6 +19,7 @@ public abstract class Ship extends Sprite {
     protected int damage;
     protected Sound shootSound;
     protected int hp;
+    protected boolean ready = false;
 
     protected Vector2 v0;
     protected Vector2 v;
@@ -35,11 +36,16 @@ public abstract class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
-        pos.mulAdd(v, delta);
-        reloadTimer += delta;
-        if (reloadTimer >= reloadInterval) {
-            reloadTimer = 0f;
-            shoot();
+        if (ready) {
+            pos.mulAdd(v, delta);
+            reloadTimer += delta;
+            if (reloadTimer >= reloadInterval) {
+                reloadTimer = 0f;
+                shoot();
+            }
+        } else {
+            pos.mulAdd(v0, delta);
+            isReady();
         }
     }
 
@@ -47,5 +53,9 @@ public abstract class Ship extends Sprite {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage);
         shootSound.play();
+    }
+
+    private void isReady() {
+        ready = getTop() <= worldBounds.getTop();
     }
 }
