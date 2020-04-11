@@ -1,5 +1,6 @@
 package ru.geekbrains.base;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -17,6 +18,7 @@ public abstract class BaseScreen implements Screen, InputProcessor {
     private Rect screenBounds;
     protected Rect worldBounds;
     private Rect glBounds;
+    protected Game game;
 
     private Matrix4 worldToGl;
     private Matrix3 screenToWorld;

@@ -1,5 +1,6 @@
 package ru.geekbrains.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -18,6 +19,7 @@ import ru.geekbrains.pool.EnemyPool;
 import ru.geekbrains.pool.ExplosionPool;
 import ru.geekbrains.sprites.Background;
 import ru.geekbrains.sprites.Bullet;
+import ru.geekbrains.sprites.ButtonNewGame;
 import ru.geekbrains.sprites.Enemy;
 import ru.geekbrains.sprites.GameOver;
 import ru.geekbrains.sprites.MainShip;
@@ -38,6 +40,7 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
     private MainShip mainShip;
     private GameOver gameOver;
+    private ButtonNewGame btnNewGame;
 
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
@@ -49,6 +52,10 @@ public class GameScreen extends BaseScreen {
     private Sound bulletSound;
     private Sound explosion;
     private State state;
+
+    public GameScreen(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -87,6 +94,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.resize(worldBounds);
         gameOver.resize(worldBounds);
+        btnNewGame.resize(worldBounds);
     }
 
     @Override
@@ -120,16 +128,26 @@ public class GameScreen extends BaseScreen {
     }
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        if (state == State.PLAYING) {
-            mainShip.touchDown(touch, pointer, button);
+        switch (state) {
+            case PLAYING:
+                mainShip.touchDown(touch, pointer, button);
+                break;
+            case GAME_OVER:
+                btnNewGame.touchDown(touch, pointer, button);
+                break;
         }
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        if (state == State.PLAYING) {
-            mainShip.touchUp(touch, pointer, button);
+        switch (state) {
+            case PLAYING:
+                mainShip.touchUp(touch, pointer, button);
+                break;
+            case GAME_OVER:
+                btnNewGame.touchUp(touch, pointer, button);
+                break;
         }
         return false;
     }
@@ -143,6 +161,7 @@ public class GameScreen extends BaseScreen {
             }
             mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
             gameOver = new GameOver(atlas);
+            btnNewGame = new ButtonNewGame(atlas, game);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
@@ -223,6 +242,7 @@ public class GameScreen extends BaseScreen {
                 break;
             case GAME_OVER:
                 gameOver.draw(batch);
+                btnNewGame.draw(batch);
                 break;
         }
         explosionPool.drawActiveSprites(batch);

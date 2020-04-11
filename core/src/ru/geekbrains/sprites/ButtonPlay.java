@@ -2,6 +2,7 @@ package ru.geekbrains.sprites;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import ru.geekbrains.base.ScaledButton;
 import ru.geekbrains.exception.GameException;
@@ -17,6 +18,11 @@ public class ButtonPlay extends ScaledButton {
         this.game = game;
     }
 
+    public ButtonPlay(TextureRegion region, Game game) throws GameException {
+        super(region);
+        this.game = game;
+    }
+
     @Override
     public void resize(Rect worldBounds) {
         setHeightProportion(0.25f);
@@ -27,6 +33,6 @@ public class ButtonPlay extends ScaledButton {
 
     @Override
     public void action() {
-        game.setScreen(new GameScreen());
+        game.setScreen(new GameScreen(game));
     }
 }
