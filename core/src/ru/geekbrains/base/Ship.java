@@ -23,6 +23,7 @@ public abstract class Ship extends Sprite {
     protected TextureRegion bulletRegion;
     protected Vector2 bulletV;
     protected Vector2 bulletPos;
+    protected Vector2[] bulletPosList;
     protected float bulletHeight;
     protected int damage;
     protected Sound shootSound;
@@ -81,18 +82,29 @@ public abstract class Ship extends Sprite {
         return hp;
     }
 
-    protected void autoShoot(float delta) {
+    protected void autoShoot(float delta, Vector2 bulletPos) {
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
             reloadTimer = 0f;
-            shoot();
+            shoot(bulletPos);
+            shootSound.play();
         }
     }
 
-    private void shoot() {
+    protected void autoShoot(float delta, Vector2[] bulletPosList) {
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval) {
+            reloadTimer = 0f;
+            for (Vector2 bulletPos : bulletPosList) {
+                shoot(bulletPos);
+                shootSound.play();
+            }
+        }
+    }
+
+    private void shoot(Vector2 bulletPos) {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, damage);
-        shootSound.play();
     }
 
     private void boom() {

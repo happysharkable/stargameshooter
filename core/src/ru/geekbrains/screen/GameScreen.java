@@ -48,6 +48,8 @@ public class GameScreen extends BaseScreen {
     private GameOver gameOver;
     private ButtonNewGame buttonNewGame;
 
+    private short shipType;
+
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
     private ExplosionPool explosionPool;
@@ -87,6 +89,7 @@ public class GameScreen extends BaseScreen {
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
         music.play();
+        shipType = 1;
         initSprites();
         state = State.PLAYING;
         prevState = State.PLAYING;
@@ -193,7 +196,7 @@ public class GameScreen extends BaseScreen {
             for (int i = 0; i < STAR_COUNT; i++) {
                 stars[i] =  new Star(atlas);
             }
-            mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
+            mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound, shipType);
             gameOver = new GameOver(atlas);
             buttonNewGame = new ButtonNewGame(atlas, this);
         } catch (GameException e) {

@@ -21,17 +21,21 @@ public class MainShip extends Ship {
     private boolean pressedLeft;
     private boolean pressedRight;
 
+    private int shipType;
+
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound) throws GameException {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound, short shipType) throws GameException {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
         this.shootSound = shootSound;
+        this.shipType = shipType;
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
         bulletPos = new Vector2();
+        setShipType(shipType);
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
         reloadInterval = 0.2f;
@@ -62,8 +66,22 @@ public class MainShip extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
-        bulletPos.set(pos.x, pos.y + getHalfHeight());
-        autoShoot(delta);
+        switch (shipType) {
+            case 1:
+                bulletPosList[0].set(pos.x, pos.y + getHalfHeight());
+                break;
+
+            case 2:
+                bulletPosList[0].set(pos.x - getHalfWidth() * 0.75f, pos.y + getHalfHeight() * 0.2f);
+                bulletPosList[1].set(pos.x + getHalfWidth() * 0.75f, pos.y + getHalfHeight() * 0.2f);
+                break;
+
+            default:
+                break;
+        }
+
+        autoShoot(delta, bulletPosList);
+
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());
             stop();
@@ -124,6 +142,12 @@ public class MainShip extends Ship {
                 pressedRight = true;
                 moveRight();
                 break;
+            case Input.Keys.NUM_1:
+                setShipType(1);
+                break;
+            case Input.Keys.NUM_2:
+                setShipType(2);
+                break;
         }
         return false;
     }
@@ -169,5 +193,13 @@ public class MainShip extends Ship {
 
     private void stop() {
         v.setZero();
+    }
+
+    private void setShipType(int shipType) {
+        this.shipType = shipType;
+        bulletPosList = new Vector2[shipType];
+        for (int i = 0; i < shipType; i++) {
+            bulletPosList[i] = new Vector2();
+        }
     }
 }

@@ -27,10 +27,9 @@ public class Enemy extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
-        bulletPos.set(pos.x, pos.y - getHalfHeight());
         if (getTop() <= worldBounds.getTop()) {
             v.set(v0);
-            autoShoot(delta);
+            autoShoot(delta, bulletPos.set(pos.x, pos.y - getHalfHeight()));
         }
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();
