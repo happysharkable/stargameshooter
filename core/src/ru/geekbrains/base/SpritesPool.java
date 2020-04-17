@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.exception.GameException;
-
 public abstract class SpritesPool<T extends Sprite> {
 
     protected final List<T> activeObjects = new ArrayList<>();
@@ -35,10 +33,10 @@ public abstract class SpritesPool<T extends Sprite> {
         }
     }
 
-    public void drawActiveSprites(SpriteBatch batch) {
+    public void drawActiveSprites(SpriteBatch batch, boolean rotate) {
         for (Sprite sprite : activeObjects) {
             if (!sprite.isDestroyed()) {
-                sprite.draw(batch);
+                sprite.draw(batch, rotate);
             }
         }
     }

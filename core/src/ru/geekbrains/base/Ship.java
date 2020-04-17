@@ -45,6 +45,7 @@ public abstract class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
+        super.update(delta);
         if (savedDelta == 0f) {
             savedDelta = delta;
         }

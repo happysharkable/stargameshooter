@@ -10,12 +10,12 @@ import ru.geekbrains.math.Rect;
 public class ButtonExit extends ScaledButton {
 
     public ButtonExit(TextureAtlas atlas) throws GameException {
-        super(atlas.findRegion("btExit"));
+        super(atlas.findRegion("button_exit"));
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.2f);
+        setHeightProportion(0.1f);
         setRight(worldBounds.getRight() - 0.05f);
         setBottom(worldBounds.getBottom() + 0.05f);
     }

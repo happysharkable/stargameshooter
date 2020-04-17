@@ -42,6 +42,10 @@ public class Sprite extends Rect {
     }
 
     public void update(float delta) {
+        System.out.println("SPRITE UPDATE");
+        angle++;
+        if (angle > 360)
+            angle = 0;
     }
 
     public void draw(SpriteBatch batch) {
@@ -51,8 +55,24 @@ public class Sprite extends Rect {
                 halfWidth, halfHeight,
                 getWidth(), getHeight(),
                 scale, scale,
-                angle
+                0
         );
+    }
+
+    public void draw(SpriteBatch batch, boolean rotate) {
+        if (rotate) {
+            batch.draw(
+                    regions[frame],
+                    getLeft(), getBottom(),
+                    halfWidth, halfHeight,
+                    getWidth(), getHeight(),
+                    scale, scale,
+                    angle
+            );
+        } else {
+            draw(batch);
+        }
+
     }
 
     public void resize(Rect worldBounds) {

@@ -2,6 +2,7 @@ package ru.geekbrains.sprites;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,12 +23,14 @@ public class MainShip extends Ship {
     private boolean pressedRight;
 
     private int shipType;
+    private Star[] stars;
+    private Vector2 parallaxV;
 
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound, short shipType) throws GameException {
-        super(atlas.findRegion("main_ship"), 1, 2, 2);
+    public MainShip(TextureAtlas atlas, TextureAtlas mainShipAtlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound, int shipType, Star[] stars) throws GameException {
+        super(mainShipAtlas.findRegion("player_ship0" + shipType), 1, 2, 2);
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
         this.shootSound = shootSound;
@@ -43,6 +46,8 @@ public class MainShip extends Ship {
         bulletHeight = 0.01f;
         damage = 1;
         hp = HP;
+        this.stars = stars;
+        parallaxV = new Vector2(0f, 0f);
     }
 
     public void startNewGame(Rect worldBounds) {
@@ -63,17 +68,24 @@ public class MainShip extends Ship {
         setBottom(worldBounds.getBottom() + BOTTOM_MARGIN);
     }
 
+    public void resize(Rect worldBounds, float posX, float posY) {
+        this.worldBounds = worldBounds;
+        setHeightProportion(SHIP_HEIGHT);
+        this.pos.x = posX;
+        this.pos.y = posY;
+    }
+
     @Override
     public void update(float delta) {
         super.update(delta);
         switch (shipType) {
             case 1:
-                bulletPosList[0].set(pos.x, pos.y + getHalfHeight());
+                bulletPosList[0].set(pos.x, pos.y + getHalfHeight() * 0.8f);
                 break;
 
             case 2:
-                bulletPosList[0].set(pos.x - getHalfWidth() * 0.75f, pos.y + getHalfHeight() * 0.2f);
-                bulletPosList[1].set(pos.x + getHalfWidth() * 0.75f, pos.y + getHalfHeight() * 0.2f);
+                bulletPosList[0].set(pos.x - getHalfWidth() * 0.85f, pos.y + getHalfHeight() * 0.25f);
+                bulletPosList[1].set(pos.x + getHalfWidth() * 0.84f, pos.y + getHalfHeight() * 0.25f);
                 break;
 
             default:
@@ -81,6 +93,8 @@ public class MainShip extends Ship {
         }
 
         autoShoot(delta, bulletPosList);
+        starsParallax();
+        drawFlame();
 
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());
@@ -142,12 +156,6 @@ public class MainShip extends Ship {
                 pressedRight = true;
                 moveRight();
                 break;
-            case Input.Keys.NUM_1:
-                setShipType(1);
-                break;
-            case Input.Keys.NUM_2:
-                setShipType(2);
-                break;
         }
         return false;
     }
@@ -183,16 +191,29 @@ public class MainShip extends Ship {
                 || bullet.getTop() < getBottom());
     }
 
+    private void drawFlame() {
+
+    }
+
     private void moveRight() {
         v.set(v0);
+        parallaxV.set(-0.001f, 0f);
     }
 
     private void moveLeft() {
         v.set(v0).rotate(180);
+        parallaxV.set(0.001f, 0f);
     }
 
     private void stop() {
         v.setZero();
+        parallaxV.setZero();
+    }
+
+    private void starsParallax() {
+        for (Star star : stars) {
+            star.pos.add(parallaxV);
+        }
     }
 
     private void setShipType(int shipType) {
@@ -201,5 +222,6 @@ public class MainShip extends Ship {
         for (int i = 0; i < shipType; i++) {
             bulletPosList[i] = new Vector2();
         }
+        hp = HP;
     }
 }
